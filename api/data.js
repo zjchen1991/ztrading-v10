@@ -1,9 +1,9 @@
 // API endpoint to serve trading data
 // Vercel Serverless Function
 
-import { kv } from '@vercel/kv';
-
 export default async function handler(req, res) {
+  // Dynamic import to handle KV
+  const { kv } = await import('@vercel/kv');
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
