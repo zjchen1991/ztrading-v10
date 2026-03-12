@@ -170,7 +170,7 @@ tbody tr:hover{background:rgba(212,168,75,.02)}
 </style>
 </head>
 <body>
-<nav class="nav"><div class="nav-l"><a href="#" class="logo"><span class="logo-i">⚡</span>Ztrading Pilot<span class="v">v1.0</span></a><div class="tabs" id="navTabs"><div class="tab on" data-p="trade">Trade</div><div class="tab" data-p="analytics">Analytics</div><div class="tab" data-p="settings">Settings</div></div></div><div class="nav-r"><span class="ptag">PAPER</span><div style="display:flex;align-items:center;gap:5px;font-size:10px"><span class="s-dot"></span><span style="color:var(--g);font-weight:600;letter-spacing:.08em">LIVE</span></div><span class="clk" id="clk">--:--:--</span><button class="btn-i" onclick="location.reload()">⟳</button></div></nav>
+<nav class="nav"><div class="nav-l"><a href="#" class="logo"><span class="logo-i">⚡</span>Ztrading Pilot<span class="v">v1.0</span></a><div class="tabs" id="navTabs"><div class="tab on" data-p="trade">Trade</div><div class="tab" data-p="analytics">Analytics</div><div class="tab" data-p="console">Console</div><div class="tab" data-p="settings">Settings</div></div></div><div class="nav-r"><span class="ptag">PAPER</span><div style="display:flex;align-items:center;gap:5px;font-size:10px"><span class="s-dot"></span><span style="color:var(--g);font-weight:600;letter-spacing:.08em">LIVE</span></div><span class="clk" id="clk">--:--:--</span><button class="btn-i" onclick="location.reload()">⟳</button></div></nav>
 
 <!-- ACCOUNT BAR -->
 <div class="acct-bar" id="acctBar">
@@ -254,6 +254,11 @@ tbody tr:hover{background:rgba(212,168,75,.02)}
   </div>
   <button class="btn-save" onclick="saveSettings()">Save Settings</button>
 </div></div>
+
+<!-- CONSOLE PAGE -->
+<div class="page" id="pg-console">
+<iframe src="/console.html" style="width:100%;height:calc(100vh - 130px);border:none;display:block;"></iframe>
+</div>
 
 <!-- CONFIRM MODAL -->
 <div class="modal-ov" id="confirmModal"><div class="modal"><h3 id="cmTitle">Confirm Trade</h3><div class="modal-info" id="cmInfo"></div><div class="modal-btns"><button class="modal-btn modal-cancel" onclick="document.getElementById('confirmModal').classList.remove('show')">Cancel</button><button class="modal-btn" id="cmExec" style="color:var(--bg)">Confirm</button></div></div></div>
