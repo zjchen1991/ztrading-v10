@@ -442,7 +442,7 @@
       // Watchlist
       let watchlistHTML = '';
       Object.entries(data.prices || {}).forEach(([symbol, price]) => {
-        const change = price.change_pct;
+        const change = price.change_pct || 0;
         watchlistHTML += `
           <div class="symbol-item">
             <span class="symbol-name">${symbol.replace('USDT', '')}</span>
@@ -450,7 +450,7 @@
           </div>
         `;
       });
-      document.getElementById('watchlist').innerHTML = watchlistHTML;
+      document.getElementById('watchlist').innerHTML = watchlistHTML || '<div style="color: #888; font-size: 11px;">Loading...</div>';
       
       // Signal candidates
       let candidatesHTML = '';
@@ -485,16 +485,21 @@
       // Positions
       let positionsHTML = '';
       (data.positions || []).forEach(pos => {
-        const unrealizedPnl = ((data.prices[pos.symbol]?.price || pos.entry_price) - pos.entry_price) * pos.qty * (pos.side === 'LONG' ? 1 : -1);
+        const currentPrice = (data.prices && data.prices[pos.symbol]) ? data.prices[pos.symbol].price : pos.entry_price;
+        const priceDiff = currentPrice - pos.entry_price;
+        const qty = pos.qty || 0;
+        const multiplier = pos.side === 'LONG' ? 1 : -1;
+        const unrealizedPnl = priceDiff * qty * multiplier;
+        
         positionsHTML += `
           <div class="position-card">
             <div>
-              <div class="pos-symbol">${pos.symbol}</div>
-              <span class="pos-side ${pos.side}">${pos.side}</span>
+              <div class="pos-symbol">${pos.symbol || 'N/A'}</div>
+              <span class="pos-side ${pos.side || 'LONG'}">${pos.side || 'N/A'}</span>
             </div>
             <div>
               <div class="pos-label">Entry</div>
-              <div class="pos-value">$${pos.entry_price?.toFixed(2)}</div>
+              <div class="pos-value">$${(pos.entry_price || 0).toFixed(2)}</div>
             </div>
             <div>
               <div class="pos-label">Unrealized P&L</div>
