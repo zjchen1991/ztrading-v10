@@ -424,21 +424,23 @@
       <!-- Right Column -->
       <div class="right">
         <div class="ticket">
-          <div class="section-title">Order Ticket</div>
+          <div class="section-title">DCA Summary</div>
           <div class="input-group">
-            <div class="input-label">Symbol</div>
-            <input type="text" class="input-field" id="ticketSymbol" placeholder="BTCUSDT">
+            <div class="input-label">Total Layers</div>
+            <div class="input-field" style="background: transparent; border: none; color: #c9a55a; font-size: 16px;">${data.open_positions || 0} / 50</div>
           </div>
           <div class="input-group">
-            <div class="input-label">Size (USD)</div>
-            <input type="number" class="input-field" id="ticketSize" placeholder="200">
+            <div class="input-label">Total Exposure</div>
+            <div class="input-field" style="background: transparent; border: none; color: #e0e0e0;">$${((data.positions || []).reduce((sum, p) => sum + (p.position_size || 0), 0)).toFixed(0)}</div>
           </div>
           <div class="input-group">
-            <div class="input-label">Leverage</div>
-            <input type="number" class="input-field" id="ticketLev" placeholder="2" min="1" max="5">
+            <div class="input-label">Realized P&L</div>
+            <div class="input-field" style="background: transparent; border: none; color: ${(data.realized_pnl || 0) >= 0 ? '#2dd4a0' : '#f0465a'};">$${(data.realized_pnl || 0).toFixed(2)}</div>
           </div>
-          <button class="btn-trade btn-long">LONG</button>
-          <button class="btn-trade btn-short">SHORT</button>
+          <div class="input-group">
+            <div class="input-label">Unrealized P&L</div>
+            <div class="input-field" style="background: transparent; border: none; color: ${(data.unrealized_pnl || 0) >= 0 ? '#2dd4a0' : '#f0465a'};">$${(data.unrealized_pnl || 0).toFixed(2)}</div>
+          </div>
         </div>
         
         <div class="risk-preview">
@@ -515,14 +517,20 @@
       document.getElementById('lossBar').style.width = Math.min(lossPct, 100) + '%';
       document.getElementById('lossText').textContent = `$${lossUsed.toFixed(0)} / $${((data.equity || 10000) * lossLimit / 100).toFixed(0)}`;
       
-      // Watchlist
+      // Watchlist with DCA layer count
       let watchlistHTML = '';
+      const dcaLayers = data.dca_layers || {};
       Object.entries(data.prices || {}).forEach(([symbol, price]) => {
         const change = price.change_pct || 0;
+        const layers = dcaLayers[symbol] || 0;
+        const maxLayers = 10;
         watchlistHTML += `
           <div class="symbol-item">
             <span class="symbol-name">${symbol.replace('USDT', '')}</span>
             <span class="symbol-change ${change >= 0 ? 'up' : 'down'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</span>
+            <div style="font-size: 9px; color: ${layers > 0 ? '#c9a55a' : '#666'}; margin-top: 2px;">
+              ${layers}/${maxLayers} layers
+            </div>
           </div>
         `;
       });
@@ -558,27 +566,33 @@
       });
       document.getElementById('blockedSignals').innerHTML = blockedHTML || '<div style="color: #888; font-size: 11px;">None blocked</div>';
       
-      // Positions
+      // Positions with DCA info (distance to TP)
       let positionsHTML = '';
       (data.positions || []).forEach(pos => {
         const currentPrice = (data.prices && data.prices[pos.symbol]) ? data.prices[pos.symbol].price : pos.entry_price;
-        const priceDiff = currentPrice - pos.entry_price;
-        const qty = pos.qty || 0;
+        const entry = pos.entry_price || 0;
+        const tp = pos.profit_target || entry * 1.01;
+        const priceDiff = currentPrice - entry;
+        const qty = pos.qty || (pos.position_size ? pos.position_size / entry : 0);
         const multiplier = pos.side === 'LONG' ? 1 : -1;
         const unrealizedPnl = priceDiff * qty * multiplier;
         
+        // Calculate distance to TP (percentage)
+        const distToTP = ((tp - currentPrice) / currentPrice) * 100;
+        const isNearTP = distToTP < 0.5; // Less than 0.5% to TP
+        
         positionsHTML += `
-          <div class="position-card">
+          <div class="position-card" style="${isNearTP ? 'border-color: #2dd4a0;' : ''}">
             <div>
-              <div class="pos-symbol">${pos.symbol || 'N/A'}</div>
-              <span class="pos-side ${pos.side || 'LONG'}">${pos.side || 'N/A'}</span>
+              <div class="pos-symbol">${(pos.symbol || 'N/A').replace('USDT', '')}</div>
+              <span class="pos-side ${pos.side || 'LONG'}">L${pos.layer || 1}</span>
             </div>
             <div>
-              <div class="pos-label">Entry</div>
-              <div class="pos-value">$${(pos.entry_price || 0).toFixed(2)}</div>
+              <div class="pos-label">Entry → Target</div>
+              <div class="pos-value">$${entry.toFixed(0)} → $${tp.toFixed(0)}</div>
             </div>
             <div>
-              <div class="pos-label">Unrealized P&L</div>
+              <div class="pos-label">${distToTP < 0 ? '+' : ''}${distToTP.toFixed(1)}% to TP</div>
               <div class="pos-value" style="color: ${unrealizedPnl >= 0 ? '#2dd4a0' : '#f0465a'}">${unrealizedPnl >= 0 ? '+' : ''}$${unrealizedPnl.toFixed(2)}</div>
             </div>
           </div>
