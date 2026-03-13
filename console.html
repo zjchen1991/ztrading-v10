@@ -427,19 +427,19 @@
           <div class="section-title">DCA Summary</div>
           <div class="input-group">
             <div class="input-label">Total Layers</div>
-            <div class="input-field" style="background: transparent; border: none; color: #c9a55a; font-size: 16px;">${data.open_positions || 0} / 50</div>
+            <div class="input-field" id="dcaTotalLayers" style="background: transparent; border: none; color: #c9a55a; font-size: 16px;">-</div>
           </div>
           <div class="input-group">
             <div class="input-label">Total Exposure</div>
-            <div class="input-field" style="background: transparent; border: none; color: #e0e0e0;">$${((data.positions || []).reduce((sum, p) => sum + (p.position_size || 0), 0)).toFixed(0)}</div>
+            <div class="input-field" id="dcaExposure" style="background: transparent; border: none; color: #e0e0e0;">-</div>
           </div>
           <div class="input-group">
             <div class="input-label">Realized P&L</div>
-            <div class="input-field" style="background: transparent; border: none; color: ${(data.realized_pnl || 0) >= 0 ? '#2dd4a0' : '#f0465a'};">$${(data.realized_pnl || 0).toFixed(2)}</div>
+            <div class="input-field" id="dcaRealized" style="background: transparent; border: none; color: #e0e0e0;">-</div>
           </div>
           <div class="input-group">
             <div class="input-label">Unrealized P&L</div>
-            <div class="input-field" style="background: transparent; border: none; color: ${(data.unrealized_pnl || 0) >= 0 ? '#2dd4a0' : '#f0465a'};">$${(data.unrealized_pnl || 0).toFixed(2)}</div>
+            <div class="input-field" id="dcaUnrealized" style="background: transparent; border: none; color: #e0e0e0;">-</div>
           </div>
         </div>
         
@@ -599,6 +599,19 @@
         `;
       });
       document.getElementById('positionsList').innerHTML = positionsHTML || '<div style="color: #888; font-size: 11px;">No open positions</div>';
+      
+      // Update DCA Summary
+      const totalLayers = data.open_positions || 0;
+      const exposure = (data.positions || []).reduce((sum, p) => sum + (p.position_size || 0), 0);
+      const realized = data.realized_pnl || 0;
+      const unrealized = data.unrealized_pnl || 0;
+      
+      document.getElementById('dcaTotalLayers').textContent = `${totalLayers} / 50`;
+      document.getElementById('dcaExposure').textContent = `$${exposure.toFixed(0)}`;
+      document.getElementById('dcaRealized').textContent = `$${realized.toFixed(2)}`;
+      document.getElementById('dcaRealized').style.color = realized >= 0 ? '#2dd4a0' : '#f0465a';
+      document.getElementById('dcaUnrealized').textContent = `$${unrealized.toFixed(2)}`;
+      document.getElementById('dcaUnrealized').style.color = unrealized >= 0 ? '#2dd4a0' : '#f0465a';
     }
     
     function toggleMode() {
