@@ -287,6 +287,82 @@
     ::-webkit-scrollbar-track { background: #0a0d10; }
     ::-webkit-scrollbar-thumb { background: #1e2329; border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: #2a3038; }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      body { overflow: auto; }
+      
+      .console {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+      }
+      
+      .topbar {
+        flex-wrap: wrap;
+        padding: 10px;
+        gap: 8px;
+        height: auto;
+        min-height: 50px;
+      }
+      
+      .mode-badge, .kill-btn {
+        font-size: 10px;
+        padding: 6px 10px;
+      }
+      
+      .status-pill, .daily-loss {
+        font-size: 10px;
+        padding: 4px 8px;
+      }
+      
+      .main {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+      }
+      
+      .left, .center, .right {
+        width: 100%;
+        border-left: none;
+        border-right: none;
+      }
+      
+      .left { order: 1; }
+      .center { order: 2; }
+      .right { order: 3; }
+      
+      .section { padding: 10px; }
+      .symbol-item { padding: 6px; font-size: 11px; }
+      .signal-item { padding: 8px; font-size: 10px; }
+      
+      .chart-area { min-height: 200px; }
+      .positions-area { height: auto; max-height: 300px; }
+      
+      .position-card {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 10px;
+      }
+      
+      .ticket, .risk-preview, .protection-status { padding: 10px; }
+      .input-field { padding: 6px; font-size: 11px; }
+      .btn-trade { padding: 10px; font-size: 12px; }
+      
+      .protection-badge { font-size: 10px; }
+    }
+    
+    /* Very small screens */
+    @media (max-width: 400px) {
+      .topbar { gap: 5px; }
+      .status-pill { display: none; }
+      .daily-loss { display: none; }
+      
+      .position-card {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
