@@ -250,7 +250,7 @@ body{background:var(--bg);color:var(--t1);font-family:var(--fm);-webkit-font-smo
 <!-- NAV -->
 <nav class="nav">
   <div class="nav-l">
-    <a href="#" class="logo"><span class="logo-i">⚡</span>Ztrading Pilot<span class="v">v2.0</span></a>
+    <a href="#" class="logo"><span class="logo-i">⚡</span>Ztrading Pilot<span class="v">v11</span></a>
     <div class="tabs" id="navTabs">
       <div class="tab on" data-p="bot">Bot</div>
       <div class="tab" data-p="trade">Trade</div>
@@ -642,7 +642,7 @@ body{background:var(--bg);color:var(--t1);font-family:var(--fm);-webkit-font-smo
 </div>
 
 <footer class="foot">
-  Ztrading Pilot v2.0 · Market data: <span id="footSrc">Aster DEX</span> · Mode: <span id="footMode">PAPER</span>
+  Ztrading Pilot v11 · Market data: <span id="footSrc">Aster DEX</span> · Mode: <span id="footMode">PAPER</span>
 </footer>
 
 <script>
@@ -1308,7 +1308,7 @@ async function loadD(){await rChart();await rOB()}
 
 // ── MAIN LOOP ─────────────────────────────────────────────────────────
 async function init(){
-  clog('Ztrading Pilot v2.0 initializing...','sys');
+  clog('Ztrading Pilot v11 initializing...','sys');
   loadSettingsUI();
   updateModeBadge();
   var synced=await fetchLiveData();
